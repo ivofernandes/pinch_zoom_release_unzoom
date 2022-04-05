@@ -11,29 +11,31 @@ and the Flutter guide for
 [developing packages and plugins](https://flutter.dev/developing-packages). 
 -->
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+This package helps to create an instagram like zoom picture. With pinch to zoom and release to unzoom
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+This package is an container of an uncliped interactive viewer that let's the user zoom the image occupying the entire screen.
 
 ## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+Add the dependency to your `pubspec.yaml`:
+
+```
+pinch_zoom_release_unzoom: 
+```
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
-
 ```dart
-const like = 'sample';
+
+PinchZoomReleaseUnzoomWidget(
+  child: Image.network(
+    'https://storage.googleapis.com/cms-storage-bucket/70760bf1e88b184bb1bc.png'
+  ),
+)
 ```
 
 ## Additional information
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+For now the package already support the Clip.none so the image can be sized and will occupy extra space after zooming 

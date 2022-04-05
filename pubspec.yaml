@@ -1,7 +1,8 @@
 name: pinch_zoom_release_unzoom
 description: A new Flutter project.
 version: 0.0.1
-homepage:
+homepage: https://incaview.com
+repository: https://github.com/ivofernandes/pinch_zoom_release_unzoom
 
 environment:
   sdk: ">=2.16.1 <3.0.0"
