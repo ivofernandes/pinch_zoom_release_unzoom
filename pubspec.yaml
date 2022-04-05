@@ -1,6 +1,6 @@
 name: pinch_zoom_release_unzoom
-description: A new Flutter project.
-version: 0.0.1
+description: A Widget to let you have a pinch to zoom that returns to the old size after the pinch has ended. Is very similar to the way you can zoom pictures on instagram
+version: 0.0.2
 homepage: https://incaview.com
 repository: https://github.com/ivofernandes/pinch_zoom_release_unzoom
 

@@ -8,7 +8,6 @@ class PinchZoomReleaseUnzoomWidget extends StatefulWidget {
   ///
   /// * [child] is the widget used for zooming.
   /// This parameter is required because without a child there is nothing to zoom on
-
   const PinchZoomReleaseUnzoomWidget(
       {required this.child,
       this.resetDuration = const Duration(milliseconds: 200),
@@ -16,15 +15,13 @@ class PinchZoomReleaseUnzoomWidget extends StatefulWidget {
       this.clipBehavior = Clip.none,
       this.minScale = 0.8,
       this.maxScale = 2.5,
-      this.log = false,
+      this.maxOverlayOpacity = 0.5,
+      this.overlayColor = Colors.black,
       Key? key})
       : assert(minScale > 0),
         assert(maxScale > 0),
         assert(maxScale >= minScale),
         super(key: key);
-
-  /// Debug logs
-  final bool log;
 
   /// If set to [Clip.none], the child may extend beyond the size of the InteractiveViewer,
   /// but it will not receive gestures in these areas.
@@ -60,8 +57,16 @@ class PinchZoomReleaseUnzoomWidget extends StatefulWidget {
   /// The duration of the reset animation
   final Duration resetDuration;
 
-  /// The
+  /// The boundary margin of the interactive viewer,
+  /// this can be used to give margin in the bottom
+  /// in case you want the user to zoom out
   final EdgeInsets boundaryMargin;
+
+  /// The max opacity of the overlay when users zooms in
+  final double maxOverlayOpacity;
+
+  /// Overlay color
+  final Color overlayColor;
 
   @override
   State<PinchZoomReleaseUnzoomWidget> createState() =>
@@ -74,6 +79,7 @@ class _PinchZoomReleaseUnzoomWidgetState
   late AnimationController animationController;
   Animation<Matrix4>? animation;
   OverlayEntry? entry;
+  List<OverlayEntry> entries = [];
   double scale = 1;
 
   @override
@@ -86,15 +92,12 @@ class _PinchZoomReleaseUnzoomWidgetState
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-
     controller = TransformationController();
     animationController =
         AnimationController(vsync: this, duration: widget.resetDuration)
           ..addListener(() => controller.value = animation!.value)
           ..addStatusListener((status) {
             if (status == AnimationStatus.completed) {
-              log('remove overlay');
               removeOverlay();
             }
           });
@@ -103,7 +106,6 @@ class _PinchZoomReleaseUnzoomWidgetState
   }
 
   void resetAnimation() {
-    log('reset animation');
     animation = Matrix4Tween(begin: controller.value, end: Matrix4.identity())
         .animate(
             CurvedAnimation(parent: animationController, curve: Curves.ease));
@@ -126,8 +128,8 @@ class _PinchZoomReleaseUnzoomWidgetState
               onInteractionUpdate: (details) {
                 if (entry == null) return;
 
-                //scale = details.scale;
-                //entry?.markNeedsBuild();
+                scale = details.scale;
+                entry?.markNeedsBuild();
               },
               panEnabled: false,
               boundaryMargin: widget.boundaryMargin,
@@ -137,52 +139,46 @@ class _PinchZoomReleaseUnzoomWidgetState
 
   void showOverlay(BuildContext context) {
     OverlayState? overlay = Overlay.of(context);
-
-    Size size = MediaQuery.of(context).size;
     RenderBox? renderBox = context.findRenderObject() as RenderBox;
-
     Offset? offset = renderBox.localToGlobal(Offset.zero);
 
-    /**
-     * Positioned.fill(
-        child: Opacity(
-        opacity: opacity, child: Container(color: Colors.black))),
-
-
-        left: offset.dx,
-        top: offset.dy +
-        MediaQuery.of(context).padding.top +
-        MediaQuery.of(context).padding.bottom,
-        width: size.width,
-     */
-
     entry = OverlayEntry(builder: (context) {
-      double opacity = ((scale - 1) / (widget.maxScale - 1)).clamp(0, 1);
-      return Stack(
-        children: [
-          Positioned(
-            left: offset.dx,
-            top: offset.dy,
-            child: Container(
-                width: renderBox.size.width,
-                height: renderBox.size.height,
-                child: buildWidget()),
-          ),
-        ],
+      double opacity = ((scale - 1) / (widget.maxScale - 1))
+          .clamp(0, widget.maxOverlayOpacity);
+
+      print(opacity.toString());
+
+      return Material(
+        color: Colors.white.withOpacity(0),
+        child: Stack(
+          children: [
+            Positioned.fill(
+                child: Opacity(
+                    opacity: opacity,
+                    child: Container(color: widget.overlayColor))),
+            Positioned(
+              left: offset.dx,
+              top: offset.dy,
+              child: Container(
+                  width: renderBox.size.width,
+                  height: renderBox.size.height,
+                  child: buildWidget()),
+            ),
+          ],
+        ),
       );
     });
     overlay?.insert(entry!);
-    log('insert overlay ' + renderBox.size.width.toString());
+
+    // We need to control all the overlays added to avoid problems in scrolling,
+    entries.add(entry!);
   }
 
   void removeOverlay() {
-    entry?.remove();
-    entry = null;
-  }
-
-  void log(String s) {
-    if (widget.log) {
-      print(s);
+    for (OverlayEntry entry in entries) {
+      entry.remove();
     }
+    entries.clear();
+    entry = null;
   }
 }
