@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
         appBar: AppBar(
           title: const Text('Pinch zoom relase unzoom '),
         ),
-        body: TestPinch(),
+        body: const TestPinch(),
         bottomNavigationBar: BottomNavigationBar(
           items: const [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
@@ -34,6 +34,8 @@ class MyApp extends StatelessWidget {
 }
 
 class TestPinch extends StatefulWidget {
+  const TestPinch({Key? key}) : super(key: key);
+
   @override
   State<TestPinch> createState() => _TestPinchState();
 }
@@ -44,10 +46,10 @@ class _TestPinchState extends State<TestPinch> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: Container(
+      child: SizedBox(
         width: MediaQuery.of(context).size.width,
         child: Container(
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           child: Column(
             children: [
               const Text('Text to test the zoom'),
@@ -72,13 +74,27 @@ class _TestPinchState extends State<TestPinch> {
                 height: 300,
                 child: PinchZoomReleaseUnzoomWidget(
                   child: Container(
-                    padding: EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(20),
                     color: Colors.deepOrange,
                     width: 300,
                     height: 300,
                     child: Column(children: const [
                       Text(
                           'The purpouse of this text is to be an example that you can pinch any widget'),
+                      SizedBox(
+                          width: 100,
+                          height: 100,
+                          child: Icon(Icons.fullscreen))
+                    ]),
+                  ),
+                  zoomChild: Container(
+                    padding: const EdgeInsets.all(20),
+                    color: Colors.deepOrange,
+                    width: 300,
+                    height: 300,
+                    child: Column(children: const [
+                      Text(
+                          'The purpouse of this text is to be an example that you switch the zoomChild if you just set the zoomChild parameter'),
                       SizedBox(
                           width: 100,
                           height: 100,
@@ -96,7 +112,9 @@ class _TestPinchState extends State<TestPinch> {
                 onPressed: () => setState(() {
                   selected = !selected;
                 }),
-                child: selected ? Text('Selected') : Text('Unselected'),
+                child: selected
+                    ? const Text('Selected')
+                    : const Text('Unselected'),
               ),
               Container(height: 400, width: 200, color: Colors.grey),
               const Text('Text to test the zoom'),

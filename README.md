@@ -42,3 +42,6 @@ PinchZoomReleaseUnzoomWidget(
     overlayColor: Colors.black,
 )
 ```
+
+Package url:
+https://pub.dev/packages/pinch_zoom_release_unzoom

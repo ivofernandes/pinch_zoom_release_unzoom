@@ -10,6 +10,7 @@ class PinchZoomReleaseUnzoomWidget extends StatefulWidget {
   /// This parameter is required because without a child there is nothing to zoom on
   const PinchZoomReleaseUnzoomWidget(
       {required this.child,
+      this.zoomChild,
       this.resetDuration = const Duration(milliseconds: 200),
       this.boundaryMargin = const EdgeInsets.only(bottom: 0),
       this.clipBehavior = Clip.none,
@@ -22,6 +23,11 @@ class PinchZoomReleaseUnzoomWidget extends StatefulWidget {
         assert(maxScale > 0),
         assert(maxScale >= minScale),
         super(key: key);
+
+  /// If you set a zoomChild, the zoom will be done in this widget,
+  /// this can be useful if you have an animation in the child widget,
+  /// and want to zoom only in the last frame of that animation
+  final Widget? zoomChild;
 
   /// If set to [Clip.none], the child may extend beyond the size of the InteractiveViewer,
   /// but it will not receive gestures in these areas.
@@ -102,7 +108,7 @@ class _PinchZoomReleaseUnzoomWidgetState
             }
           });
 
-    return buildWidget();
+    return buildWidget(widget.child);
   }
 
   void resetAnimation() {
@@ -112,7 +118,7 @@ class _PinchZoomReleaseUnzoomWidgetState
     animationController.forward(from: 0);
   }
 
-  Widget buildWidget() {
+  Widget buildWidget(Widget zoomableWidget) {
     return Builder(
         builder: (context) => InteractiveViewer(
               clipBehavior: widget.clipBehavior,
@@ -133,7 +139,7 @@ class _PinchZoomReleaseUnzoomWidgetState
               },
               panEnabled: false,
               boundaryMargin: widget.boundaryMargin,
-              child: widget.child,
+              child: zoomableWidget,
             ));
   }
 
@@ -146,8 +152,6 @@ class _PinchZoomReleaseUnzoomWidgetState
       double opacity = ((scale - 1) / (widget.maxScale - 1))
           .clamp(0, widget.maxOverlayOpacity);
 
-      print(opacity.toString());
-
       return Material(
         color: Colors.white.withOpacity(0),
         child: Stack(
@@ -159,10 +163,10 @@ class _PinchZoomReleaseUnzoomWidgetState
             Positioned(
               left: offset.dx,
               top: offset.dy,
-              child: Container(
+              child: SizedBox(
                   width: renderBox.size.width,
                   height: renderBox.size.height,
-                  child: buildWidget()),
+                  child: buildWidget(widget.zoomChild ?? widget.child)),
             ),
           ],
         ),
