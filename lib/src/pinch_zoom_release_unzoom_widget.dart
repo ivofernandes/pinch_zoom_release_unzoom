@@ -16,6 +16,7 @@ class PinchZoomReleaseUnzoomWidget extends StatefulWidget {
       this.clipBehavior = Clip.none,
       this.minScale = 0.8,
       this.maxScale = 2.5,
+      this.useOverlay = true,
       this.maxOverlayOpacity = 0.5,
       this.overlayColor = Colors.black,
       Key? key})
@@ -68,6 +69,13 @@ class PinchZoomReleaseUnzoomWidget extends StatefulWidget {
   /// in case you want the user to zoom out
   final EdgeInsets boundaryMargin;
 
+  /// If it's true will create a new widget to zoom, to occupy the entire screen
+  ///
+  /// The problem of using an overlay is if you want to zoom in a scrollable widget
+  /// as the widget is rebuilt to occupy the entire screen
+  /// can lose the scroll or any other state
+  final bool useOverlay;
+
   /// The max opacity of the overlay when users zooms in
   final double maxOverlayOpacity;
 
@@ -103,7 +111,7 @@ class _PinchZoomReleaseUnzoomWidgetState
         AnimationController(vsync: this, duration: widget.resetDuration)
           ..addListener(() => controller.value = animation!.value)
           ..addStatusListener((status) {
-            if (status == AnimationStatus.completed) {
+            if (status == AnimationStatus.completed && widget.useOverlay) {
               removeOverlay();
             }
           });
@@ -126,7 +134,9 @@ class _PinchZoomReleaseUnzoomWidgetState
               maxScale: widget.maxScale,
               transformationController: controller,
               onInteractionStart: (details) {
-                showOverlay(context);
+                if (widget.useOverlay) {
+                  showOverlay(context);
+                }
               },
               onInteractionEnd: (details) {
                 resetAnimation();
@@ -153,7 +163,7 @@ class _PinchZoomReleaseUnzoomWidgetState
           .clamp(0, widget.maxOverlayOpacity);
 
       return Material(
-        color: Colors.white.withOpacity(0),
+        color: Colors.green.withOpacity(0.0),
         child: Stack(
           children: [
             Positioned.fill(

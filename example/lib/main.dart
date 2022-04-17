@@ -116,6 +116,17 @@ class _TestPinchState extends State<TestPinch> {
                     ? const Text('Selected')
                     : const Text('Unselected'),
               ),
+              Text(
+                  'Example of keeping scrolling state, this example sets useOverlay to false to avoid rebuilds that would destroy the scroll state:'),
+              PinchZoomReleaseUnzoomWidget(
+                useOverlay: false,
+                child: SizedBox(
+                    height: 500,
+                    child: ListView.builder(
+                        itemBuilder: (BuildContext context, int index) {
+                      return Center(child: Text('$index'));
+                    })),
+              ),
               Container(height: 400, width: 200, color: Colors.grey),
               const Text('Text to test the zoom'),
               const Text('Text to test the zoom'),
