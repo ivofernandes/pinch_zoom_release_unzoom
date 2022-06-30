@@ -134,6 +134,8 @@ class _PinchZoomReleaseUnzoomWidgetState
               maxScale: widget.maxScale,
               transformationController: controller,
               onInteractionStart: (details) {
+                print('start with ${details.pointerCount} fingers');
+                if (details.pointerCount != 2) return;
                 if (widget.useOverlay) {
                   showOverlay(context);
                 }
