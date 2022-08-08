@@ -52,8 +52,7 @@ class _TestPinchState extends State<TestPinch> {
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
-              const Text('Text to test the zoom'),
-              const Text('Text to test the zoom'),
+              const Text('Test the zoom with 2 fingers required'),
               SizedBox(
                 width: 300,
                 height: 300,
@@ -69,6 +68,24 @@ class _TestPinchState extends State<TestPinch> {
                   overlayColor: Colors.black,
                 ),
               ),
+              const Text('Test the zoom with no fingers restrition'),
+              SizedBox(
+                width: 300,
+                height: 300,
+                child: PinchZoomReleaseUnzoomWidget(
+                  child: Image.network(
+                      'https://storage.googleapis.com/cms-storage-bucket/70760bf1e88b184bb1bc.png'),
+                  minScale: 0.8,
+                  maxScale: 6,
+                  resetDuration: const Duration(milliseconds: 200),
+                  boundaryMargin: const EdgeInsets.only(bottom: 0),
+                  clipBehavior: Clip.none,
+                  maxOverlayOpacity: 0.5,
+                  overlayColor: Colors.black,
+                  fingersRequiredToPinch: -1,
+                ),
+              ),
+              Text('Test with text widget instead of an image'),
               SizedBox(
                 width: 300,
                 height: 300,
@@ -102,6 +119,7 @@ class _TestPinchState extends State<TestPinch> {
                     ]),
                   ),
                   maxScale: 4,
+                  fingersRequiredToPinch: -1,
                 ),
               ),
               MaterialButton(

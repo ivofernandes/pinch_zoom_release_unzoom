@@ -19,6 +19,7 @@ class PinchZoomReleaseUnzoomWidget extends StatefulWidget {
       this.useOverlay = true,
       this.maxOverlayOpacity = 0.5,
       this.overlayColor = Colors.black,
+      this.fingersRequiredToPinch = 2,
       Key? key})
       : assert(minScale > 0),
         assert(maxScale > 0),
@@ -82,6 +83,10 @@ class PinchZoomReleaseUnzoomWidget extends StatefulWidget {
   /// Overlay color
   final Color overlayColor;
 
+  /// Fingers required to start a pinch,
+  /// if it's zero or below zero no validation will be performed
+  final int fingersRequiredToPinch;
+
   @override
   State<PinchZoomReleaseUnzoomWidget> createState() =>
       _PinchZoomReleaseUnzoomWidgetState();
@@ -134,8 +139,11 @@ class _PinchZoomReleaseUnzoomWidgetState
               maxScale: widget.maxScale,
               transformationController: controller,
               onInteractionStart: (details) {
-                print('start with ${details.pointerCount} fingers');
-                if (details.pointerCount != 2) return;
+                if (widget.fingersRequiredToPinch > 0 &&
+                    details.pointerCount != widget.fingersRequiredToPinch) {
+                  print('start with ${details.pointerCount} fingers');
+                  return;
+                }
                 if (widget.useOverlay) {
                   showOverlay(context);
                 }
