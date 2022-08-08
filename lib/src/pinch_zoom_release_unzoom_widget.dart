@@ -15,7 +15,7 @@ class PinchZoomReleaseUnzoomWidget extends StatefulWidget {
       this.boundaryMargin = const EdgeInsets.only(bottom: 0),
       this.clipBehavior = Clip.none,
       this.minScale = 0.8,
-      this.maxScale = 2.5,
+      this.maxScale = 8,
       this.useOverlay = true,
       this.maxOverlayOpacity = 0.5,
       this.overlayColor = Colors.black,

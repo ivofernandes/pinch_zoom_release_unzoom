@@ -16,3 +16,5 @@ Added condition to only introduce overlay when the user interacts with the inter
 ## 0.0.6 7/08/2022
 Added the number of fingers restriction as a parameter, not sure if will have any real use but it helps when using the simulator
 
+## 0.0.7 8/08/2022
+Fixed documentation, and defaults

@@ -13,7 +13,7 @@ Once you release the screen and stop the pinch interaction the image/widget will
 Add the dependency to your `pubspec.yaml`:
 
 ```
-pinch_zoom_release_unzoom: ^0.0.6
+pinch_zoom_release_unzoom: ^0.0.7
 ```
 
 ## Usage
@@ -46,7 +46,7 @@ PinchZoomReleaseUnzoomWidget(
 ```
 
 ## Simulator test
-To test in a simulator may
+To test in a simulator add a fingersRequiredToPinch to pinch with a -1 to disable the requirement of two fingers to start an interaction
 ```dart
 PinchZoomReleaseUnzoomWidget(
     child: Image.network('https://storage.googleapis.com/cms-storage-bucket/70760bf1e88b184bb1bc.png'),
