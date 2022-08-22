@@ -18,3 +18,6 @@ Added the number of fingers restriction as a parameter, not sure if will have an
 
 ## 0.0.7 8/08/2022
 Fixed documentation, and defaults
+
+## 0.0.8 22/08/2022
+Improved documentation, with a video explaining the project

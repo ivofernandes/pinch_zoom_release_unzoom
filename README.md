@@ -1,6 +1,10 @@
 This package helps to create an instagram like zoom picture. With pinch to zoom and release to unzoom
 
 ![Zoom_demo](https://github.com/ivofernandes/pinch_zoom_release_unzoom/blob/master/doc/pinch_zoom_release_unzoom.gif?raw=true)
+
+In this video I explained how to use pinch to zoom, in a flutter project
+https://youtu.be/V2DglEpynF8
+
 ## Features
 
 Let's your app show zoomable images in an user friendly way.
@@ -13,7 +17,7 @@ Once you release the screen and stop the pinch interaction the image/widget will
 Add the dependency to your `pubspec.yaml`:
 
 ```
-pinch_zoom_release_unzoom: ^0.0.7
+pinch_zoom_release_unzoom: ^0.0.8
 ```
 
 ## Usage
@@ -28,7 +32,8 @@ PinchZoomReleaseUnzoomWidget(
 ```
 
 ## Additional information
-This package also support some extra parameterizations that may be useful depending on what are you trying to achieve
+
+This package also support some extra params that may be useful depending on what are you trying to achieve
 
 ```dart
 PinchZoomReleaseUnzoomWidget(
