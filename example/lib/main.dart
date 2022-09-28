@@ -15,32 +15,75 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData.dark(),
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Pinch zoom relase unzoom '),
-        ),
-        body: const TestPinch(),
-        bottomNavigationBar: BottomNavigationBar(
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-            BottomNavigationBarItem(icon: Icon(Icons.work), label: 'About'),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.shopping_cart), label: 'Checkout')
-          ],
-        ),
-      ),
+      home: HomeScreen(),
     );
   }
 }
 
-class TestPinch extends StatefulWidget {
-  const TestPinch({Key? key}) : super(key: key);
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  State<TestPinch> createState() => _TestPinchState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _TestPinchState extends State<TestPinch> {
+class _HomeScreenState extends State<HomeScreen> {
+  int _selectedIndex = 0;
+  PageController _pageController = PageController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Pinch zoom relase unzoom '),
+      ),
+      body: PageView(
+        controller: _pageController,
+        physics: NeverScrollableScrollPhysics(),
+        children: [
+          const TestPinchWithScroll(),
+          const TestPinchWithoutScroll(),
+          GestureLogWidget()
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: onTap,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'With Scroll',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.work),
+            label: 'Without scroll',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.gesture),
+            label: 'Gesture',
+          ),
+        ],
+      ),
+    );
+  }
+
+  void onTap(int value) {
+    _selectedIndex = value;
+    _pageController.animateToPage(value,
+        duration: Duration(milliseconds: 200), curve: Curves.easeOut);
+
+    setState(() {});
+  }
+}
+
+class TestPinchWithScroll extends StatefulWidget {
+  const TestPinchWithScroll({Key? key}) : super(key: key);
+
+  @override
+  State<TestPinchWithScroll> createState() => _TestPinchWithScrollState();
+}
+
+class _TestPinchWithScrollState extends State<TestPinchWithScroll> {
   bool selected = false;
 
   @override
@@ -55,10 +98,12 @@ class _TestPinchState extends State<TestPinch> {
               const Text('Test the zoom with 2 fingers required'),
               SizedBox(
                 width: 300,
-                height: 300,
+                height: 250,
                 child: PinchZoomReleaseUnzoomWidget(
                   child: Image.network(
-                      'https://storage.googleapis.com/cms-storage-bucket/70760bf1e88b184bb1bc.png'),
+                    'https://www.animalfriends.co.uk/siteassets/media/images/article-images/cat-articles/38_afi_article1_caring-for-a-kitten-tips-for-the-first-month.png',
+                    fit: BoxFit.fill,
+                  ),
                   minScale: 0.8,
                   maxScale: 4,
                   resetDuration: const Duration(milliseconds: 200),
@@ -153,5 +198,103 @@ class _TestPinchState extends State<TestPinch> {
         ),
       ),
     );
+  }
+}
+
+class TestPinchWithoutScroll extends StatelessWidget {
+  const TestPinchWithoutScroll({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 300,
+      height: 300,
+      child: PinchZoomReleaseUnzoomWidget(
+        child: Image.network(
+            'https://storage.googleapis.com/cms-storage-bucket/70760bf1e88b184bb1bc.png'),
+        minScale: 0.8,
+        maxScale: 4,
+        resetDuration: const Duration(milliseconds: 200),
+        boundaryMargin: const EdgeInsets.only(bottom: 0),
+        clipBehavior: Clip.none,
+        maxOverlayOpacity: 0.5,
+        overlayColor: Colors.black,
+      ),
+    );
+  }
+}
+
+class GestureLogWidget extends StatefulWidget {
+  const GestureLogWidget({Key? key}) : super(key: key);
+
+  @override
+  State<GestureLogWidget> createState() => _GestureLogWidgetState();
+}
+
+class _GestureLogWidgetState extends State<GestureLogWidget> {
+  String log = '';
+  bool scroll = true;
+
+  @override
+  Widget build(BuildContext context) {
+    Widget container = Container(
+      margin: const EdgeInsets.all(10),
+      child: Column(
+        children: [
+          GestureDetector(
+            onScaleStart: (details) => setState(() {
+              log += details.toString() + '\n\n';
+            }),
+            onTap: () => setState(() {
+              log += 'onTap\n\n';
+            }),
+            onVerticalDragStart: (details) => setState(() {
+              log += details.toString() + '\n\n';
+            }),
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              color: Colors.grey.withOpacity(0.5),
+              width: MediaQuery.of(context).size.width * 0.8,
+              height: MediaQuery.of(context).size.height - 250,
+              child: Text(
+                log,
+                style: TextStyle(fontSize: 12),
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              MaterialButton(
+                onPressed: () => setState(() {
+                  log = '';
+                }),
+                child: const Text('Reset'),
+                color: Colors.blueAccent,
+              ),
+              MaterialButton(
+                onPressed: () => setState(() {
+                  scroll = !scroll;
+                }),
+                child: Text(scroll ? 'Turn scroll off' : 'Turn scroll on'),
+                color: Colors.orange,
+              )
+            ],
+          ),
+          SizedBox(
+            height: scroll ? 200 : 0,
+          )
+        ],
+      ),
+    );
+
+    return scroll
+        ? SingleChildScrollView(
+            child: container,
+          )
+        : container;
   }
 }

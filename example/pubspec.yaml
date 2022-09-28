@@ -1,4 +1,4 @@
-name: example
+name: example_pinch_zoom_release_unzoom
 description: Example of how to use pinch zoom release unzoom
 
 # The following line prevents the package from being accidentally published to
