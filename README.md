@@ -18,7 +18,7 @@ Once you release the screen and stop the pinch interaction the image/widget will
 Add the dependency to your `pubspec.yaml`:
 
 ```
-pinch_zoom_release_unzoom: ^0.0.9
+pinch_zoom_release_unzoom: ^0.0.10
 ```
 
 ## Usage
@@ -53,7 +53,8 @@ PinchZoomReleaseUnzoomWidget(
 
 ## Making it work well inside a scroll
 The problem with making a pinch working inside a scroll is that the drag of a screen, 
-as a simple gesture tends to override the more comple scale gesture that needs two fingers to work well,
+as a simple gesture that can be done with just one finger, 
+tends to override the more complex scale gesture that needs two fingers to work well,
 the best way I found to overcome that challenge is to change the physics of the scroll to NeverScrollableScrollPhysics()
 when the second finger touch the screen, that way the scroll stops to override the scale gesture and it's easy to interact with the interactive viewer.
 

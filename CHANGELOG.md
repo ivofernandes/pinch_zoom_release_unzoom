@@ -24,3 +24,6 @@ Improved documentation, with a video explaining the project
 
 ## 0.0.9 28/09/2022
 Improved the pinch functionality inside a scroll
+
+## 0.0.10 29/09/2022
+Improved documentation
