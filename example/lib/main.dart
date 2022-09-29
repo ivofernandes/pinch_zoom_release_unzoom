@@ -43,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           const TestPinchWithScroll(),
           const TestPinchWithoutScroll(),
-          GestureLogWidget()
+          TestSimpleScroll()
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -60,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.gesture),
-            label: 'Gesture',
+            label: 'Simple Scroll',
           ),
         ],
       ),
@@ -86,9 +86,14 @@ class TestPinchWithScroll extends StatefulWidget {
 class _TestPinchWithScrollState extends State<TestPinchWithScroll> {
   bool selected = false;
 
+  bool blockScroll = false;
+  ScrollController controller = ScrollController();
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      controller: controller,
+      physics: blockScroll ? NeverScrollableScrollPhysics() : ScrollPhysics(),
       child: SizedBox(
         width: MediaQuery.of(context).size.width,
         child: Container(
@@ -102,11 +107,15 @@ class _TestPinchWithScrollState extends State<TestPinchWithScroll> {
                 child: PinchZoomReleaseUnzoomWidget(
                   child: Image.network(
                     'https://www.animalfriends.co.uk/siteassets/media/images/article-images/cat-articles/38_afi_article1_caring-for-a-kitten-tips-for-the-first-month.png',
-                    fit: BoxFit.fill,
+                  ),
+                  twoFingersOn: () => setState(() => blockScroll = true),
+                  twoFingersOff: () => Future.delayed(
+                    const Duration(milliseconds: 150),
+                    () => setState(() => blockScroll = false),
                   ),
                   minScale: 0.8,
                   maxScale: 4,
-                  resetDuration: const Duration(milliseconds: 200),
+                  resetDuration: const Duration(milliseconds: 150),
                   boundaryMargin: const EdgeInsets.only(bottom: 0),
                   clipBehavior: Clip.none,
                   maxOverlayOpacity: 0.5,
@@ -120,6 +129,10 @@ class _TestPinchWithScrollState extends State<TestPinchWithScroll> {
                 child: PinchZoomReleaseUnzoomWidget(
                   child: Image.network(
                       'https://storage.googleapis.com/cms-storage-bucket/70760bf1e88b184bb1bc.png'),
+                  twoFingersOn: () => setState(() => blockScroll = true),
+                  twoFingersOff: () => Future.delayed(
+                      const Duration(milliseconds: 200),
+                      () => setState(() => blockScroll = false)),
                   minScale: 0.8,
                   maxScale: 6,
                   resetDuration: const Duration(milliseconds: 200),
@@ -130,11 +143,16 @@ class _TestPinchWithScrollState extends State<TestPinchWithScroll> {
                   fingersRequiredToPinch: -1,
                 ),
               ),
-              Text('Test with text widget instead of an image'),
+              const Text('Test with text widget instead of an image'),
               SizedBox(
                 width: 300,
                 height: 300,
                 child: PinchZoomReleaseUnzoomWidget(
+                  twoFingersOn: () => setState(() => blockScroll = true),
+                  twoFingersOff: () => Future.delayed(
+                    const Duration(milliseconds: 250),
+                    () => setState(() => blockScroll = false),
+                  ),
                   child: Container(
                     padding: const EdgeInsets.all(20),
                     color: Colors.deepOrange,
@@ -224,77 +242,50 @@ class TestPinchWithoutScroll extends StatelessWidget {
   }
 }
 
-class GestureLogWidget extends StatefulWidget {
-  const GestureLogWidget({Key? key}) : super(key: key);
+class TestSimpleScroll extends StatefulWidget {
+  const TestSimpleScroll({super.key});
 
   @override
-  State<GestureLogWidget> createState() => _GestureLogWidgetState();
+  State<TestSimpleScroll> createState() => _TestSimpleScrollState();
 }
 
-class _GestureLogWidgetState extends State<GestureLogWidget> {
-  String log = '';
-  bool scroll = true;
+class _TestSimpleScrollState extends State<TestSimpleScroll> {
+  bool blockScroll = false;
+
+  ScrollController controller = ScrollController();
 
   @override
   Widget build(BuildContext context) {
-    Widget container = Container(
-      margin: const EdgeInsets.all(10),
-      child: Column(
-        children: [
-          GestureDetector(
-            onScaleStart: (details) => setState(() {
-              log += details.toString() + '\n\n';
-            }),
-            onTap: () => setState(() {
-              log += 'onTap\n\n';
-            }),
-            onVerticalDragStart: (details) => setState(() {
-              log += details.toString() + '\n\n';
-            }),
-            child: Container(
-              padding: const EdgeInsets.all(10),
-              color: Colors.grey.withOpacity(0.5),
-              width: MediaQuery.of(context).size.width * 0.8,
-              height: MediaQuery.of(context).size.height - 250,
-              child: Text(
-                log,
-                style: TextStyle(fontSize: 12),
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return SingleChildScrollView(
+      controller: controller,
+      physics: blockScroll ? NeverScrollableScrollPhysics() : ScrollPhysics(),
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          child: Column(
             children: [
-              MaterialButton(
-                onPressed: () => setState(() {
-                  log = '';
-                }),
-                child: const Text('Reset'),
-                color: Colors.blueAccent,
+              SizedBox(
+                width: 300,
+                height: 250,
+                child: PinchZoomReleaseUnzoomWidget(
+                  child: Image.network(
+                    'https://www.animalfriends.co.uk/siteassets/media/images/article-images/cat-articles/38_afi_article1_caring-for-a-kitten-tips-for-the-first-month.png',
+                  ),
+                  twoFingersOn: () => setState(() => blockScroll = true),
+                  twoFingersOff: () => Future.delayed(
+                    PinchZoomReleaseUnzoomWidget.defaultResetDuration,
+                    () => setState(() => blockScroll = false),
+                  ),
+                ),
               ),
-              MaterialButton(
-                onPressed: () => setState(() {
-                  scroll = !scroll;
-                }),
-                child: Text(scroll ? 'Turn scroll off' : 'Turn scroll on'),
-                color: Colors.orange,
+              const SizedBox(
+                height: 5000,
               )
             ],
           ),
-          SizedBox(
-            height: scroll ? 200 : 0,
-          )
-        ],
+        ),
       ),
     );
-
-    return scroll
-        ? SingleChildScrollView(
-            child: container,
-          )
-        : container;
   }
 }
