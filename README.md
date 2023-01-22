@@ -144,7 +144,3 @@ PinchZoomReleaseUnzoomWidget(
 ## Like us on pub.dev
 Package url:
 https://pub.dev/packages/pinch_zoom_release_unzoom
-
-
-## Instruction to publish the package to pub.dev
-dart pub publish
