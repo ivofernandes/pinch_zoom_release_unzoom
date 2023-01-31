@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData.dark(),
-      home: HomeScreen(),
+      home: const HomeScreen(),
     );
   }
 }
@@ -29,7 +29,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
-  PageController _pageController = PageController();
+  final PageController _pageController = PageController();
 
   @override
   Widget build(BuildContext context) {
@@ -39,10 +39,10 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: PageView(
         controller: _pageController,
-        physics: NeverScrollableScrollPhysics(),
-        children: [
-          const TestPinchWithScroll(),
-          const TestPinchWithoutScroll(),
+        physics: const NeverScrollableScrollPhysics(),
+        children: const [
+          TestPinchWithScroll(),
+          TestPinchWithoutScroll(),
           TestSimpleScroll()
         ],
       ),
@@ -70,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void onTap(int value) {
     _selectedIndex = value;
     _pageController.animateToPage(value,
-        duration: Duration(milliseconds: 200), curve: Curves.easeOut);
+        duration: const Duration(milliseconds: 200), curve: Curves.easeOut);
 
     setState(() {});
   }
@@ -93,7 +93,7 @@ class _TestPinchWithScrollState extends State<TestPinchWithScroll> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       controller: controller,
-      physics: blockScroll ? NeverScrollableScrollPhysics() : ScrollPhysics(),
+      physics: blockScroll ? const NeverScrollableScrollPhysics() : const ScrollPhysics(),
       child: SizedBox(
         width: MediaQuery.of(context).size.width,
         child: Container(
@@ -197,7 +197,7 @@ class _TestPinchWithScrollState extends State<TestPinchWithScroll> {
                     ? const Text('Selected')
                     : const Text('Unselected'),
               ),
-              Text(
+              const Text(
                   'Example of keeping scrolling state, this example sets useOverlay to false to avoid rebuilds that would destroy the scroll state:'),
               PinchZoomReleaseUnzoomWidget(
                 useOverlay: false,
@@ -258,7 +258,7 @@ class _TestSimpleScrollState extends State<TestSimpleScroll> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       controller: controller,
-      physics: blockScroll ? NeverScrollableScrollPhysics() : ScrollPhysics(),
+      physics: blockScroll ? const NeverScrollableScrollPhysics() : const ScrollPhysics(),
       child: SizedBox(
         width: MediaQuery.of(context).size.width,
         child: Container(

@@ -27,3 +27,6 @@ Improved the pinch functionality inside a scroll
 
 ## 0.0.10 29/09/2022
 Improved documentation
+
+## 0.0.11 31/01/2023
+Fixed analysis issues

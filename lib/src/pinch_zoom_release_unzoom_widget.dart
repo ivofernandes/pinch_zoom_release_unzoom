@@ -140,7 +140,7 @@ class _PinchZoomReleaseUnzoomWidgetState
       ..addStatusListener(
         (status) {
           if (status == AnimationStatus.completed && widget.useOverlay) {
-            Future.delayed(Duration(milliseconds: 100), () => removeOverlay());
+            Future.delayed(const Duration(milliseconds: 100), () => removeOverlay());
           }
         },
       );
@@ -215,7 +215,7 @@ class _PinchZoomReleaseUnzoomWidgetState
   final events = [];
   void showOverlay(BuildContext context) {
     log('Show overlay. Count before: ${overlayEntries.length}');
-    OverlayState? overlay = Overlay.of(context);
+    OverlayState overlay = Overlay.of(context);
     RenderBox? renderBox = context.findRenderObject() as RenderBox;
     Offset? offset = renderBox.localToGlobal(Offset.zero);
 
@@ -246,7 +246,7 @@ class _PinchZoomReleaseUnzoomWidgetState
         ),
       );
     });
-    overlay?.insert(entry!);
+    overlay.insert(entry!);
 
     // We need to control all the overlays added to avoid problems in scrolling,
     overlayEntries.add(entry!);
@@ -263,7 +263,7 @@ class _PinchZoomReleaseUnzoomWidgetState
 
   void log(String message) {
     if (widget.log) {
-      print(message);
+      debugPrint(message);
     }
   }
 }
