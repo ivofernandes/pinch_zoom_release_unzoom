@@ -140,7 +140,8 @@ class _PinchZoomReleaseUnzoomWidgetState
       ..addStatusListener(
         (status) {
           if (status == AnimationStatus.completed && widget.useOverlay) {
-            Future.delayed(const Duration(milliseconds: 100), () => removeOverlay());
+            Future.delayed(
+                const Duration(milliseconds: 100), () => removeOverlay());
           }
         },
       );
@@ -213,6 +214,7 @@ class _PinchZoomReleaseUnzoomWidgetState
   }
 
   final events = [];
+
   void showOverlay(BuildContext context) {
     log('Show overlay. Count before: ${overlayEntries.length}');
     OverlayState overlay = Overlay.of(context);
