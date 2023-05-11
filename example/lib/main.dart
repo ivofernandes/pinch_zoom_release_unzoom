@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pinch_zoom_release_unzoom/pinch_zoom_release_unzoom.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 void main() {
   runApp(const MyApp());
@@ -44,6 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
           TestPinchWithScroll(),
           TestPinchWithoutScroll(),
           TestSimpleScroll(),
+          TestScrollablePositionedList(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -62,6 +64,10 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icon(Icons.gesture),
             label: 'Test Scroll Block',
           ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.list),
+            label: 'Issue',
+          ),
         ],
       ),
     );
@@ -69,7 +75,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void onTap(int value) {
     _selectedIndex = value;
-    _pageController.animateToPage(value, duration: const Duration(milliseconds: 200), curve: Curves.easeOut);
+    _pageController.animateToPage(value,
+        duration: const Duration(milliseconds: 200), curve: Curves.easeOut);
 
     setState(() {});
   }
@@ -92,7 +99,9 @@ class _TestPinchWithScrollState extends State<TestPinchWithScroll> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       controller: controller,
-      physics: blockScroll ? const NeverScrollableScrollPhysics() : const ScrollPhysics(),
+      physics: blockScroll
+          ? const NeverScrollableScrollPhysics()
+          : const ScrollPhysics(),
       child: SizedBox(
         width: MediaQuery.of(context).size.width,
         child: Container(
@@ -126,10 +135,12 @@ class _TestPinchWithScrollState extends State<TestPinchWithScroll> {
                 width: 300,
                 height: 300,
                 child: PinchZoomReleaseUnzoomWidget(
-                  child: Image.network('https://storage.googleapis.com/cms-storage-bucket/70760bf1e88b184bb1bc.png'),
+                  child: Image.network(
+                      'https://storage.googleapis.com/cms-storage-bucket/70760bf1e88b184bb1bc.png'),
                   twoFingersOn: () => setState(() => blockScroll = true),
-                  twoFingersOff: () =>
-                      Future.delayed(const Duration(milliseconds: 200), () => setState(() => blockScroll = false)),
+                  twoFingersOff: () => Future.delayed(
+                      const Duration(milliseconds: 200),
+                      () => setState(() => blockScroll = false)),
                   minScale: 0.8,
                   maxScale: 6,
                   resetDuration: const Duration(milliseconds: 200),
@@ -156,8 +167,12 @@ class _TestPinchWithScrollState extends State<TestPinchWithScroll> {
                     width: 300,
                     height: 300,
                     child: Column(children: const [
-                      Text('The purpouse of this text is to be an example that you can pinch any widget'),
-                      SizedBox(width: 100, height: 100, child: Icon(Icons.fullscreen))
+                      Text(
+                          'The purpouse of this text is to be an example that you can pinch any widget'),
+                      SizedBox(
+                          width: 100,
+                          height: 100,
+                          child: Icon(Icons.fullscreen))
                     ]),
                   ),
                   zoomChild: Container(
@@ -168,7 +183,10 @@ class _TestPinchWithScrollState extends State<TestPinchWithScroll> {
                     child: Column(children: const [
                       Text(
                           'The purpouse of this text is to be an example that you switch the zoomChild if you just set the zoomChild parameter'),
-                      SizedBox(width: 100, height: 100, child: Icon(Icons.fullscreen))
+                      SizedBox(
+                          width: 100,
+                          height: 100,
+                          child: Icon(Icons.fullscreen))
                     ]),
                   ),
                   maxScale: 4,
@@ -177,12 +195,15 @@ class _TestPinchWithScrollState extends State<TestPinchWithScroll> {
               ),
               MaterialButton(
                 elevation: 5,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0)),
                 color: Colors.blueGrey,
                 onPressed: () => setState(() {
                   selected = !selected;
                 }),
-                child: selected ? const Text('Selected') : const Text('Unselected'),
+                child: selected
+                    ? const Text('Selected')
+                    : const Text('Unselected'),
               ),
               const Text(
                   'Example of keeping scrolling state, this example sets useOverlay to false to avoid rebuilds that would destroy the scroll state:'),
@@ -190,7 +211,8 @@ class _TestPinchWithScrollState extends State<TestPinchWithScroll> {
                 useOverlay: false,
                 child: SizedBox(
                     height: 500,
-                    child: ListView.builder(itemBuilder: (BuildContext context, int index) {
+                    child: ListView.builder(
+                        itemBuilder: (BuildContext context, int index) {
                       return Center(child: Text('$index'));
                     })),
               ),
@@ -214,7 +236,8 @@ class TestPinchWithoutScroll extends StatelessWidget {
       width: 300,
       height: 300,
       child: PinchZoomReleaseUnzoomWidget(
-        child: Image.network('https://storage.googleapis.com/cms-storage-bucket/70760bf1e88b184bb1bc.png'),
+        child: Image.network(
+            'https://storage.googleapis.com/cms-storage-bucket/70760bf1e88b184bb1bc.png'),
         minScale: 0.8,
         maxScale: 4,
         resetDuration: const Duration(milliseconds: 200),
@@ -244,7 +267,9 @@ class _TestSimpleScrollState extends State<TestSimpleScroll> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       controller: controller,
-      physics: blockScroll ? const NeverScrollableScrollPhysics() : const ScrollPhysics(),
+      physics: blockScroll
+          ? const NeverScrollableScrollPhysics()
+          : const ScrollPhysics(),
       child: SizedBox(
         width: MediaQuery.of(context).size.width,
         child: Container(
@@ -262,7 +287,8 @@ class _TestSimpleScrollState extends State<TestSimpleScroll> {
                       const Text('Can block scroll'),
                       Checkbox(
                         value: canBlockScroll,
-                        onChanged: (value) => setState(() => canBlockScroll = value!),
+                        onChanged: (value) =>
+                            setState(() => canBlockScroll = value!),
                       ),
                     ],
                   ),
@@ -300,6 +326,100 @@ class _TestSimpleScrollState extends State<TestSimpleScroll> {
                 height: 5000,
               )
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class TestScrollablePositionedList extends StatefulWidget {
+  const TestScrollablePositionedList({super.key});
+
+  @override
+  State<TestScrollablePositionedList> createState() =>
+      _TestScrollablePositionedListState();
+}
+
+class _TestScrollablePositionedListState
+    extends State<TestScrollablePositionedList> {
+  bool blockScroll = false;
+
+  final ItemScrollController controller = ItemScrollController();
+
+  static const List<String> testImages = [
+    'https://www.kasandbox.org/programming-images/avatars/spunky-sam.png',
+    'https://www.kasandbox.org/programming-images/avatars/spunky-sam-green.png',
+    'https://www.kasandbox.org/programming-images/avatars/mr-pants.png',
+    'https://www.kasandbox.org/programming-images/avatars/mr-pants-green.png',
+    'https://www.kasandbox.org/programming-images/avatars/mr-pants-purple.png',
+    'https://www.kasandbox.org/programming-images/avatars/marcimus.png',
+    'https://www.kasandbox.org/programming-images/avatars/marcimus-red.png',
+    'https://www.kasandbox.org/programming-images/avatars/marcimus-orange.png',
+    'https://www.kasandbox.org/programming-images/avatars/marcimus-purple.png',
+  ];
+
+  void twoFingersOn() {
+    setState(() {
+      blockScroll = true;
+    });
+  }
+
+  void twoFingersOff() {
+    setState(() {
+      blockScroll = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ScrollablePositionedList.separated(
+      itemScrollController: controller,
+      itemCount: testImages.length,
+      physics: blockScroll
+          ? const NeverScrollableScrollPhysics()
+          : const BouncingScrollPhysics(),
+      padding: const EdgeInsets.all(10),
+      itemBuilder: (BuildContext context, int index) {
+        return _ListItem(
+          twoFingersOn: twoFingersOn,
+          twoFingersOff: twoFingersOff,
+          url: testImages[index],
+        );
+      },
+      separatorBuilder: (BuildContext context, int index) =>
+          const SizedBox(height: 8),
+    );
+  }
+}
+
+class _ListItem extends StatelessWidget {
+  const _ListItem({
+    required this.url,
+    this.twoFingersOn,
+    this.twoFingersOff,
+    Key? key,
+  }) : super(key: key);
+
+  final String url;
+  final VoidCallback? twoFingersOn;
+  final VoidCallback? twoFingersOff;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8)
+      ),
+      child: PinchZoomReleaseUnzoomWidget(
+        twoFingersOn: twoFingersOff,
+        twoFingersOff: twoFingersOff,
+        child: AspectRatio(
+          aspectRatio: 1,
+          child: Image.network(
+            url,
+            fit: BoxFit.cover,
           ),
         ),
       ),
