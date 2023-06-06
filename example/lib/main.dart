@@ -169,8 +169,8 @@ class _TestPinchWithScrollState extends State<TestPinchWithScroll> {
                     color: Colors.deepOrange,
                     width: 300,
                     height: 300,
-                    child: Column(children: const [
-                      Text('The purpouse of this text is to be an example that you can pinch any widget'),
+                    child: const Column(children: [
+                      Text('The purpose of this text is to be an example that you can pinch any widget'),
                       SizedBox(width: 100, height: 100, child: Icon(Icons.fullscreen))
                     ]),
                   ),
@@ -179,9 +179,9 @@ class _TestPinchWithScrollState extends State<TestPinchWithScroll> {
                     color: Colors.deepOrange,
                     width: 300,
                     height: 300,
-                    child: Column(children: const [
+                    child: const Column(children: [
                       Text(
-                          'The purpouse of this text is to be an example that you switch the zoomChild if you just set the zoomChild parameter'),
+                          'The purpose of this text is to be an example that you switch the zoomChild if you just set the zoomChild parameter'),
                       SizedBox(width: 100, height: 100, child: Icon(Icons.fullscreen))
                     ]),
                   ),
@@ -249,7 +249,11 @@ class TestSimpleScroll extends StatefulWidget {
 }
 
 class _TestSimpleScrollState extends State<TestSimpleScroll> {
+  /// Variable to control if the scroll is blocked or not
   bool blockScroll = false;
+
+  /// Checkbox to control if is possible to block the scroll
+  /// (this just for checkbox example, no need to copy this part)
   bool canBlockScroll = true;
 
   ScrollController controller = ScrollController();
@@ -301,7 +305,7 @@ class _TestSimpleScrollState extends State<TestSimpleScroll> {
                     debugPrint('scroll unblocked because of two fingers off');
                     return Future.delayed(
                       PinchZoomReleaseUnzoomWidget.defaultResetDuration,
-                      () => setState(() => blockScroll = false),
+                      () => setState(() => blockScroll = false,
                     );
                   },
                 ),
@@ -309,7 +313,7 @@ class _TestSimpleScrollState extends State<TestSimpleScroll> {
               const SizedBox(
                 height: 50,
               ),
-              Text('Scroll '),
+              const Text('Scroll '),
               const SizedBox(
                 height: 5000,
               )
