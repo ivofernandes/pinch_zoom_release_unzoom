@@ -106,10 +106,12 @@ class PinchZoomReleaseUnzoomWidget extends StatefulWidget {
   final bool log;
 
   @override
-  State<PinchZoomReleaseUnzoomWidget> createState() => _PinchZoomReleaseUnzoomWidgetState();
+  State<PinchZoomReleaseUnzoomWidget> createState() =>
+      _PinchZoomReleaseUnzoomWidgetState();
 }
 
-class _PinchZoomReleaseUnzoomWidgetState extends State<PinchZoomReleaseUnzoomWidget> with TickerProviderStateMixin {
+class _PinchZoomReleaseUnzoomWidgetState
+    extends State<PinchZoomReleaseUnzoomWidget> with TickerProviderStateMixin {
   late TransformationController controller;
   late AnimationController animationController;
   Animation<Matrix4>? animation;
@@ -138,7 +140,8 @@ class _PinchZoomReleaseUnzoomWidgetState extends State<PinchZoomReleaseUnzoomWid
       ..addStatusListener(
         (status) {
           if (status == AnimationStatus.completed && widget.useOverlay) {
-            Future.delayed(const Duration(milliseconds: 100), () => removeOverlay());
+            Future.delayed(
+                const Duration(milliseconds: 100), () => removeOverlay());
           }
         },
       );
@@ -149,7 +152,8 @@ class _PinchZoomReleaseUnzoomWidgetState extends State<PinchZoomReleaseUnzoomWid
   void resetAnimation() {
     if (mounted) {
       animation = Matrix4Tween(begin: controller.value, end: Matrix4.identity())
-          .animate(CurvedAnimation(parent: animationController, curve: widget.resetCurve));
+          .animate(CurvedAnimation(
+              parent: animationController, curve: widget.resetCurve));
       animationController.forward(from: 0);
     }
   }
@@ -183,7 +187,8 @@ class _PinchZoomReleaseUnzoomWidgetState extends State<PinchZoomReleaseUnzoomWid
           maxScale: widget.maxScale,
           transformationController: controller,
           onInteractionStart: (details) {
-            if (widget.fingersRequiredToPinch > 0 && details.pointerCount != widget.fingersRequiredToPinch) {
+            if (widget.fingersRequiredToPinch > 0 &&
+                details.pointerCount != widget.fingersRequiredToPinch) {
               log('avoided start with ${details.pointerCount} fingers');
               return;
             }
@@ -223,7 +228,8 @@ class _PinchZoomReleaseUnzoomWidgetState extends State<PinchZoomReleaseUnzoomWid
     Offset? offset = renderBox.localToGlobal(Offset.zero);
 
     entry = OverlayEntry(builder: (context) {
-      double opacity = ((scale - 1) / (widget.maxScale - 1)).clamp(0, widget.maxOverlayOpacity);
+      double opacity = ((scale - 1) / (widget.maxScale - 1))
+          .clamp(0, widget.maxOverlayOpacity);
 
       return Material(
         color: Colors.green.withOpacity(0.0),

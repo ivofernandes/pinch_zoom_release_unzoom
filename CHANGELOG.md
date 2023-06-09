@@ -33,3 +33,6 @@ Fixed analysis issues
 
 ## 0.0.12 31/01/2023
 Fixed formatting issues
+
+## 1.0.0 9/06/2023
+Improved documentation to make the package work with scroll

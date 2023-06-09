@@ -52,6 +52,9 @@ PinchZoomReleaseUnzoomWidget(
 ```
 
 ## Making it work well inside a scroll
+I made a video explaining how to solve the pinch to zoom inside a scroll:
+https://youtu.be/FUuCOdQerpw
+
 The problem with making a pinch working inside a scroll is that the drag of a screen, 
 as a simple gesture that can be done with just one finger, 
 tends to override the more complex scale gesture that needs two fingers to work well,
