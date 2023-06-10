@@ -36,3 +36,6 @@ Fixed formatting issues
 
 ## 1.0.0 9/06/2023
 Improved documentation to make the package work with scroll
+
+## 1.0.1 10/06/2023
+Refactor logger

@@ -323,7 +323,7 @@ class _TestSimpleScrollState extends State<TestSimpleScroll> {
                   },
                   twoFingersOff: () {
                     debugPrint('scroll unblocked because of two fingers off');
-                    return Future.delayed(
+                    Future.delayed(
                       PinchZoomReleaseUnzoomWidget.defaultResetDuration,
                       () => setState(
                         () => blockScroll = false,
