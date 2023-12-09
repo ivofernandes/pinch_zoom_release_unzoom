@@ -1,3 +1,9 @@
+[![pub package](https://img.shields.io/pub/v/pinch_zoom_release_unzoom.svg?label=pinch_zoom_release_unzoom&color=blue)](https://pub.dev/packages/pinch_zoom_release_unzoom)
+[![popularity](https://img.shields.io/pub/popularity/pinch_zoom_release_unzoom?logo=dart)](https://pub.dev/packages/pinch_zoom_release_unzoom/score)
+[![likes](https://img.shields.io/pub/likes/pinch_zoom_release_unzoom?logo=dart)](https://pub.dev/packages/pinch_zoom_release_unzoom/score)
+[![pub points](https://img.shields.io/pub/points/sentry?logo=dart)](https://pub.dev/packages/pinch_zoom_release_unzoom/score)
+
+
 This package helps to create an instagram like zoom picture. With pinch to zoom and release to unzoom
 
 In this video I explained how to use pinch to zoom, in a flutter project
@@ -18,7 +24,7 @@ Once you release the screen and stop the pinch interaction the image/widget will
 Add the dependency to your `pubspec.yaml`:
 
 ```
-pinch_zoom_release_unzoom: ^0.0.10
+pinch_zoom_release_unzoom: ^1.0.1
 ```
 
 ## Usage
