@@ -107,12 +107,10 @@ class PinchZoomReleaseUnzoomWidget extends StatefulWidget {
   final bool log;
 
   @override
-  State<PinchZoomReleaseUnzoomWidget> createState() =>
-      _PinchZoomReleaseUnzoomWidgetState();
+  State<PinchZoomReleaseUnzoomWidget> createState() => _PinchZoomReleaseUnzoomWidgetState();
 }
 
-class _PinchZoomReleaseUnzoomWidgetState
-    extends State<PinchZoomReleaseUnzoomWidget> with TickerProviderStateMixin {
+class _PinchZoomReleaseUnzoomWidgetState extends State<PinchZoomReleaseUnzoomWidget> with TickerProviderStateMixin {
   late TransformationController controller;
   late AnimationController animationController;
   Animation<Matrix4>? animation;
@@ -125,18 +123,7 @@ class _PinchZoomReleaseUnzoomWidgetState
   void initState() {
     super.initState();
     PinchZoomLogger().logFlag = widget.log;
-  }
 
-  @override
-  void dispose() {
-    controller.dispose();
-    animationController.dispose();
-
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
     controller = TransformationController();
     animationController = AnimationController(
       vsync: this,
@@ -152,15 +139,23 @@ class _PinchZoomReleaseUnzoomWidgetState
           }
         },
       );
-
-    return buildWidget(widget.child);
   }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    animationController.dispose();
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => buildWidget(widget.child);
 
   void resetAnimation() {
     if (mounted) {
       animation = Matrix4Tween(begin: controller.value, end: Matrix4.identity())
-          .animate(CurvedAnimation(
-              parent: animationController, curve: widget.resetCurve));
+          .animate(CurvedAnimation(parent: animationController, curve: widget.resetCurve));
       animationController.forward(from: 0);
     }
   }
@@ -173,8 +168,7 @@ class _PinchZoomReleaseUnzoomWidgetState
             PinchZoomLogger().log('added new pointer. Total: $pointers');
 
             if (pointers >= 2 && widget.twoFingersOn != null) {
-              PinchZoomLogger()
-                  .log('two fingers on. Parent widget should block scroll');
+              PinchZoomLogger().log('two fingers on. Parent widget should block scroll');
               widget.twoFingersOn!.call();
             }
           },
@@ -184,8 +178,7 @@ class _PinchZoomReleaseUnzoomWidgetState
             PinchZoomLogger().log('removed pointer. Total: $pointers');
 
             if (pointers < 2 && widget.twoFingersOff != null) {
-              PinchZoomLogger()
-                  .log('two fingers off. Parent widget should unblock scroll');
+              PinchZoomLogger().log('two fingers off. Parent widget should unblock scroll');
               widget.twoFingersOff!.call();
             }
           },
@@ -195,10 +188,8 @@ class _PinchZoomReleaseUnzoomWidgetState
             maxScale: widget.maxScale,
             transformationController: controller,
             onInteractionStart: (details) {
-              if (widget.fingersRequiredToPinch > 0 &&
-                  details.pointerCount != widget.fingersRequiredToPinch) {
-                PinchZoomLogger()
-                    .log('avoided start with ${details.pointerCount} fingers');
+              if (widget.fingersRequiredToPinch > 0 && details.pointerCount != widget.fingersRequiredToPinch) {
+                PinchZoomLogger().log('avoided start with ${details.pointerCount} fingers');
                 return;
               }
               if (widget.useOverlay) {
@@ -230,15 +221,13 @@ class _PinchZoomReleaseUnzoomWidgetState
       );
 
   void showOverlay(BuildContext context) {
-    PinchZoomLogger()
-        .log('Show overlay. Count before: ${overlayEntries.length}');
+    PinchZoomLogger().log('Show overlay. Count before: ${overlayEntries.length}');
     final OverlayState overlay = Overlay.of(context);
     final RenderBox renderBox = context.findRenderObject()! as RenderBox;
     final Offset offset = renderBox.localToGlobal(Offset.zero);
 
     entry = OverlayEntry(builder: (context) {
-      final double opacity = ((scale - 1) / (widget.maxScale - 1))
-          .clamp(0, widget.maxOverlayOpacity);
+      final double opacity = ((scale - 1) / (widget.maxScale - 1)).clamp(0, widget.maxOverlayOpacity);
 
       return Material(
         color: Colors.green.withOpacity(0),
