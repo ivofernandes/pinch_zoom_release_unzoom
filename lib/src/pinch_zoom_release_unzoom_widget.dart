@@ -25,6 +25,7 @@ class PinchZoomReleaseUnzoomWidget extends StatefulWidget {
     this.twoFingersOn,
     this.twoFingersOff,
     this.log = false,
+    this.rootOverlay = false,
     super.key,
   })  : assert(minScale > 0),
         assert(maxScale > 0),
@@ -105,6 +106,11 @@ class PinchZoomReleaseUnzoomWidget extends StatefulWidget {
 
   /// Log what's happening
   final bool log;
+
+  /// If `rootOverlay` is set to true, the state from the furthest instance of
+  /// this class is given instead. Useful for installing overlay entries above
+  /// all subsequent instances of [Overlay].
+  final bool rootOverlay;
 
   @override
   State<PinchZoomReleaseUnzoomWidget> createState() => _PinchZoomReleaseUnzoomWidgetState();
@@ -222,7 +228,10 @@ class _PinchZoomReleaseUnzoomWidgetState extends State<PinchZoomReleaseUnzoomWid
 
   void showOverlay(BuildContext context) {
     PinchZoomLogger().log('Show overlay. Count before: ${overlayEntries.length}');
-    final OverlayState overlay = Overlay.of(context);
+    final OverlayState overlay = Overlay.of(
+      context,
+      rootOverlay: widget.rootOverlay,
+    );
     final RenderBox renderBox = context.findRenderObject()! as RenderBox;
     final Offset offset = renderBox.localToGlobal(Offset.zero);
 
