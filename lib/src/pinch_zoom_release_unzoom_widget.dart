@@ -180,10 +180,9 @@ class _PinchZoomReleaseUnzoomWidgetState extends State<PinchZoomReleaseUnzoomWid
           },
           onPointerUp: (event) {
             events.clear();
-            final int pointers = events.length;
-            PinchZoomLogger().log('removed pointer. Total: $pointers');
+            PinchZoomLogger().log('removed pointer. Total: 0');
 
-            if (pointers < 2 && widget.twoFingersOff != null) {
+            if (widget.twoFingersOff != null) {
               PinchZoomLogger().log('two fingers off. Parent widget should unblock scroll');
               widget.twoFingersOff!.call();
             }
