@@ -19,13 +19,13 @@ class PinchZoomReleaseUnzoomWidget extends StatefulWidget {
     this.minScale = 0.8,
     this.maxScale = 8,
     this.useOverlay = true,
+    this.rootOverlay = false,
     this.maxOverlayOpacity = 0.5,
     this.overlayColor = Colors.black,
     this.fingersRequiredToPinch = 2,
     this.twoFingersOn,
     this.twoFingersOff,
     this.log = false,
-    this.rootOverlay = false,
     super.key,
   })  : assert(minScale > 0),
         assert(maxScale > 0),
@@ -88,6 +88,11 @@ class PinchZoomReleaseUnzoomWidget extends StatefulWidget {
   /// can lose the scroll or any other state
   final bool useOverlay;
 
+  /// If `rootOverlay` is set to true, the state from the furthest instance of
+  /// this class is given instead. Useful for installing overlay entries above
+  /// all subsequent instances of [Overlay].
+  final bool rootOverlay;
+
   /// The max opacity of the overlay when users zooms in
   final double maxOverlayOpacity;
 
@@ -107,22 +112,31 @@ class PinchZoomReleaseUnzoomWidget extends StatefulWidget {
   /// Log what's happening
   final bool log;
 
-  /// If `rootOverlay` is set to true, the state from the furthest instance of
-  /// this class is given instead. Useful for installing overlay entries above
-  /// all subsequent instances of [Overlay].
-  final bool rootOverlay;
-
   @override
-  State<PinchZoomReleaseUnzoomWidget> createState() => _PinchZoomReleaseUnzoomWidgetState();
+  State<PinchZoomReleaseUnzoomWidget> createState() =>
+      _PinchZoomReleaseUnzoomWidgetState();
 }
 
-class _PinchZoomReleaseUnzoomWidgetState extends State<PinchZoomReleaseUnzoomWidget> with TickerProviderStateMixin {
-  late TransformationController controller;
+class _PinchZoomReleaseUnzoomWidgetState
+    extends State<PinchZoomReleaseUnzoomWidget> with TickerProviderStateMixin {
+  /// Transformation controller of the interactive viewer,
+  /// This property is very used to animate the zoom reset as we need to programmatically change the scale
+  late TransformationController transformationController;
+
+  /// Animation controller used to trigger the animate the zoom reset
   late AnimationController animationController;
   Animation<Matrix4>? animation;
+
+  /// Overlay entry used to show the zoomed widget
   OverlayEntry? entry;
+
+  /// List of all the overlays added to the screen
   List<OverlayEntry> overlayEntries = [];
+
+  /// Scale of the widget, used to calculate the opacity of the overlay
   double scale = 1;
+
+  /// List of onPointerUp and onPointerDown, used to count number of fingers on the widget
   final List<int> events = [];
 
   @override
@@ -130,13 +144,13 @@ class _PinchZoomReleaseUnzoomWidgetState extends State<PinchZoomReleaseUnzoomWid
     super.initState();
     PinchZoomLogger().logFlag = widget.log;
 
-    controller = TransformationController();
+    transformationController = TransformationController();
     animationController = AnimationController(
       vsync: this,
       duration: widget.resetDuration,
     )
       ..addListener(
-        () => controller.value = animation!.value,
+        () => transformationController.value = animation!.value,
       )
       ..addStatusListener(
         (status) {
@@ -149,7 +163,7 @@ class _PinchZoomReleaseUnzoomWidgetState extends State<PinchZoomReleaseUnzoomWid
 
   @override
   void dispose() {
-    controller.dispose();
+    transformationController.dispose();
     animationController.dispose();
 
     super.dispose();
@@ -160,8 +174,10 @@ class _PinchZoomReleaseUnzoomWidgetState extends State<PinchZoomReleaseUnzoomWid
 
   void resetAnimation() {
     if (mounted) {
-      animation = Matrix4Tween(begin: controller.value, end: Matrix4.identity())
-          .animate(CurvedAnimation(parent: animationController, curve: widget.resetCurve));
+      animation = Matrix4Tween(
+              begin: transformationController.value, end: Matrix4.identity())
+          .animate(CurvedAnimation(
+              parent: animationController, curve: widget.resetCurve));
       animationController.forward(from: 0);
     }
   }
@@ -174,7 +190,8 @@ class _PinchZoomReleaseUnzoomWidgetState extends State<PinchZoomReleaseUnzoomWid
             PinchZoomLogger().log('added new pointer. Total: $pointers');
 
             if (pointers >= 2 && widget.twoFingersOn != null) {
-              PinchZoomLogger().log('two fingers on. Parent widget should block scroll');
+              PinchZoomLogger()
+                  .log('two fingers on. Parent widget should block scroll');
               widget.twoFingersOn!.call();
             }
           },
@@ -183,7 +200,8 @@ class _PinchZoomReleaseUnzoomWidgetState extends State<PinchZoomReleaseUnzoomWid
             PinchZoomLogger().log('removed pointer. Total: 0');
 
             if (widget.twoFingersOff != null) {
-              PinchZoomLogger().log('two fingers off. Parent widget should unblock scroll');
+              PinchZoomLogger()
+                  .log('two fingers off. Parent widget should unblock scroll');
               widget.twoFingersOff!.call();
             }
           },
@@ -191,10 +209,12 @@ class _PinchZoomReleaseUnzoomWidgetState extends State<PinchZoomReleaseUnzoomWid
             clipBehavior: widget.clipBehavior,
             minScale: widget.minScale,
             maxScale: widget.maxScale,
-            transformationController: controller,
+            transformationController: transformationController,
             onInteractionStart: (details) {
-              if (widget.fingersRequiredToPinch > 0 && details.pointerCount != widget.fingersRequiredToPinch) {
-                PinchZoomLogger().log('avoided start with ${details.pointerCount} fingers');
+              if (widget.fingersRequiredToPinch > 0 &&
+                  details.pointerCount != widget.fingersRequiredToPinch) {
+                PinchZoomLogger()
+                    .log('avoided start with ${details.pointerCount} fingers');
                 return;
               }
               if (widget.useOverlay) {
@@ -226,7 +246,8 @@ class _PinchZoomReleaseUnzoomWidgetState extends State<PinchZoomReleaseUnzoomWid
       );
 
   void showOverlay(BuildContext context) {
-    PinchZoomLogger().log('Show overlay. Count before: ${overlayEntries.length}');
+    PinchZoomLogger()
+        .log('Show overlay. Count before: ${overlayEntries.length}');
     final OverlayState overlay = Overlay.of(
       context,
       rootOverlay: widget.rootOverlay,
@@ -235,7 +256,8 @@ class _PinchZoomReleaseUnzoomWidgetState extends State<PinchZoomReleaseUnzoomWid
     final Offset offset = renderBox.localToGlobal(Offset.zero);
 
     entry = OverlayEntry(builder: (context) {
-      final double opacity = ((scale - 1) / (widget.maxScale - 1)).clamp(0, widget.maxOverlayOpacity);
+      final double opacity = ((scale - 1) / (widget.maxScale - 1))
+          .clamp(0, widget.maxOverlayOpacity);
 
       return Material(
         color: Colors.green.withOpacity(0),

@@ -492,22 +492,20 @@ class _TestRootOverlayState extends State<TestRootOverlay> {
   bool rootOverlay = false;
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        OutlinedButton(
-          onPressed: () {
-            setState(() {
-              rootOverlay = !rootOverlay;
-            });
-          },
-          child: Text("rootOverlay: $rootOverlay"),
-        ),
-        Expanded(
-          child: Navigator(
-            initialRoute: "/",
-            onGenerateRoute: (RouteSettings settings) {
-              return MaterialPageRoute(
+  Widget build(BuildContext context) => Column(
+        children: <Widget>[
+          OutlinedButton(
+            onPressed: () {
+              setState(() {
+                rootOverlay = !rootOverlay;
+              });
+            },
+            child: Text('rootOverlay: $rootOverlay'),
+          ),
+          Expanded(
+            child: Navigator(
+              initialRoute: '/',
+              onGenerateRoute: (RouteSettings settings) => MaterialPageRoute(
                 settings: settings,
                 builder: (context) => Scaffold(
                   body: Center(
@@ -526,11 +524,9 @@ class _TestRootOverlayState extends State<TestRootOverlay> {
                     ),
                   ),
                 ),
-              );
-            },
+              ),
+            ),
           ),
-        ),
-      ],
-    );
-  }
+        ],
+      );
 }

@@ -39,3 +39,6 @@ Improved documentation to make the package work with scroll
 
 ## 1.0.1 10/06/2023
 Refactor logger
+
+## 1.0.2 18/01/2024
+Use root
