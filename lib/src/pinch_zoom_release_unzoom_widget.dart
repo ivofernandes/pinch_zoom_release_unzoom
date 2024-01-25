@@ -253,7 +253,10 @@ class _PinchZoomReleaseUnzoomWidgetState
       rootOverlay: widget.rootOverlay,
     );
     final RenderBox renderBox = context.findRenderObject()! as RenderBox;
-    final Offset offset = renderBox.localToGlobal(Offset.zero);
+    final Offset offset = renderBox.localToGlobal(
+      Offset.zero,
+      ancestor: overlay.context.findRenderObject(),
+    );
 
     entry = OverlayEntry(builder: (context) {
       final double opacity = ((scale - 1) / (widget.maxScale - 1))
