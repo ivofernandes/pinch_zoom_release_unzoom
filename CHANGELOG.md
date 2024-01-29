@@ -41,4 +41,7 @@ Improved documentation to make the package work with scroll
 Refactor logger
 
 ## 1.0.2 18/01/2024
-Use root
+Use root navigagor
+
+## 1.0.3 28/01/2024
+Improve overlay position inside nested navigator

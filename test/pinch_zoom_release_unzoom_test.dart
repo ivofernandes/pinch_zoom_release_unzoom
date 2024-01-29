@@ -14,7 +14,7 @@ void main() {
         home: Scaffold(
           body: PinchZoomReleaseUnzoomWidget(
             key: key,
-            child: Text('Zoom me'),
+            child: const Text('Zoom me'),
           ),
         ),
       ),
