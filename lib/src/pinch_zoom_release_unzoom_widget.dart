@@ -11,6 +11,7 @@ class PinchZoomReleaseUnzoomWidget extends StatefulWidget {
   /// This parameter is required because without a child there is nothing to zoom on
   const PinchZoomReleaseUnzoomWidget({
     required this.child,
+    this.buildContextOverlayState,
     this.zoomChild,
     this.resetDuration = defaultResetDuration,
     this.resetCurve = Curves.ease,
@@ -33,6 +34,8 @@ class PinchZoomReleaseUnzoomWidget extends StatefulWidget {
 
   /// Widget where the pinch will be done
   final Widget child;
+
+  final BuildContext? buildContextOverlayState;
 
   /// If you set a zoomChild, the zoom will be done in this widget,
   /// this can be useful if you have an animation in the child widget,
@@ -249,7 +252,7 @@ class _PinchZoomReleaseUnzoomWidgetState
     PinchZoomLogger()
         .log('Show overlay. Count before: ${overlayEntries.length}');
     final OverlayState overlay = Overlay.of(
-      context,
+      widget.buildContextOverlayState ?? context,
       rootOverlay: widget.rootOverlay,
     );
     final RenderBox renderBox = context.findRenderObject()! as RenderBox;
