@@ -35,6 +35,7 @@ class PinchZoomReleaseUnzoomWidget extends StatefulWidget {
   /// Widget where the pinch will be done
   final Widget child;
 
+  /// Context of the overlay
   final BuildContext? buildContextOverlayState;
 
   /// If you set a zoomChild, the zoom will be done in this widget,
@@ -116,12 +117,10 @@ class PinchZoomReleaseUnzoomWidget extends StatefulWidget {
   final bool log;
 
   @override
-  State<PinchZoomReleaseUnzoomWidget> createState() =>
-      _PinchZoomReleaseUnzoomWidgetState();
+  State<PinchZoomReleaseUnzoomWidget> createState() => _PinchZoomReleaseUnzoomWidgetState();
 }
 
-class _PinchZoomReleaseUnzoomWidgetState
-    extends State<PinchZoomReleaseUnzoomWidget> with TickerProviderStateMixin {
+class _PinchZoomReleaseUnzoomWidgetState extends State<PinchZoomReleaseUnzoomWidget> with TickerProviderStateMixin {
   /// Transformation controller of the interactive viewer,
   /// This property is very used to animate the zoom reset as we need to programmatically change the scale
   late TransformationController transformationController;
@@ -177,10 +176,8 @@ class _PinchZoomReleaseUnzoomWidgetState
 
   void resetAnimation() {
     if (mounted) {
-      animation = Matrix4Tween(
-              begin: transformationController.value, end: Matrix4.identity())
-          .animate(CurvedAnimation(
-              parent: animationController, curve: widget.resetCurve));
+      animation = Matrix4Tween(begin: transformationController.value, end: Matrix4.identity())
+          .animate(CurvedAnimation(parent: animationController, curve: widget.resetCurve));
       animationController.forward(from: 0);
     }
   }
@@ -193,8 +190,7 @@ class _PinchZoomReleaseUnzoomWidgetState
             PinchZoomLogger().log('added new pointer. Total: $pointers');
 
             if (pointers >= 2 && widget.twoFingersOn != null) {
-              PinchZoomLogger()
-                  .log('two fingers on. Parent widget should block scroll');
+              PinchZoomLogger().log('two fingers on. Parent widget should block scroll');
               widget.twoFingersOn!.call();
             }
           },
@@ -203,8 +199,7 @@ class _PinchZoomReleaseUnzoomWidgetState
             PinchZoomLogger().log('removed pointer. Total: 0');
 
             if (widget.twoFingersOff != null) {
-              PinchZoomLogger()
-                  .log('two fingers off. Parent widget should unblock scroll');
+              PinchZoomLogger().log('two fingers off. Parent widget should unblock scroll');
               widget.twoFingersOff!.call();
             }
           },
@@ -214,10 +209,8 @@ class _PinchZoomReleaseUnzoomWidgetState
             maxScale: widget.maxScale,
             transformationController: transformationController,
             onInteractionStart: (details) {
-              if (widget.fingersRequiredToPinch > 0 &&
-                  details.pointerCount != widget.fingersRequiredToPinch) {
-                PinchZoomLogger()
-                    .log('avoided start with ${details.pointerCount} fingers');
+              if (widget.fingersRequiredToPinch > 0 && details.pointerCount != widget.fingersRequiredToPinch) {
+                PinchZoomLogger().log('avoided start with ${details.pointerCount} fingers');
                 return;
               }
               if (widget.useOverlay) {
@@ -249,8 +242,7 @@ class _PinchZoomReleaseUnzoomWidgetState
       );
 
   void showOverlay(BuildContext context) {
-    PinchZoomLogger()
-        .log('Show overlay. Count before: ${overlayEntries.length}');
+    PinchZoomLogger().log('Show overlay. Count before: ${overlayEntries.length}');
     final OverlayState overlay = Overlay.of(
       widget.buildContextOverlayState ?? context,
       rootOverlay: widget.rootOverlay,
@@ -262,8 +254,7 @@ class _PinchZoomReleaseUnzoomWidgetState
     );
 
     entry = OverlayEntry(builder: (context) {
-      final double opacity = ((scale - 1) / (widget.maxScale - 1))
-          .clamp(0, widget.maxOverlayOpacity);
+      final double opacity = ((scale - 1) / (widget.maxScale - 1)).clamp(0, widget.maxOverlayOpacity);
 
       return Material(
         color: Colors.green.withOpacity(0),

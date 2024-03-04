@@ -47,6 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
               TestSimpleScroll(),
               TestScrollablePositionedList(),
               TestRootOverlay(),
+              Test2Scaffolds(),
             ],
           ),
           bottomNavigationBar: BottomNavigationBar(
@@ -75,6 +76,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 icon: Icon(Icons.book),
                 label: 'Test rootOverlay',
               ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.scatter_plot_outlined),
+                label: '2 scaffolds',
+              )
             ],
           ),
         ),
@@ -92,8 +97,65 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
+class Test2Scaffolds extends StatelessWidget {
+  const Test2Scaffolds({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          title: const Text('2 Scaffolds'),
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              SizedBox(
+                width: 300,
+                height: 250,
+                child: PinchZoomReleaseUnzoomWidget(
+                  minScale: 0.8,
+                  maxScale: 4,
+                  resetDuration: const Duration(milliseconds: 150),
+                  boundaryMargin: const EdgeInsets.only(bottom: 0),
+                  clipBehavior: Clip.none,
+                  maxOverlayOpacity: 0.5,
+                  overlayColor: Colors.black,
+                  child: Image.network(
+                    'https://www.animalfriends.co.uk/siteassets/media/images/article-images/cat-articles/38_afi_article1_caring-for-a-kitten-tips-for-the-first-month.png',
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 300,
+                height: 250,
+                child: PinchZoomReleaseUnzoomWidget(
+                  minScale: 0.8,
+                  maxScale: 4,
+                  resetDuration: const Duration(milliseconds: 150),
+                  boundaryMargin: const EdgeInsets.only(bottom: 0),
+                  clipBehavior: Clip.none,
+                  maxOverlayOpacity: 0.5,
+                  overlayColor: Colors.black,
+                  rootOverlay: false,
+                  child: Image.network(
+                    'https://www.animalfriends.co.uk/siteassets/media/images/article-images/cat-articles/38_afi_article1_caring-for-a-kitten-tips-for-the-first-month.png',
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 100,
+              ),
+            ],
+          ),
+        ),
+      );
+}
+
 class TestPinchWithScroll extends StatefulWidget {
-  const TestPinchWithScroll({super.key});
+  const TestPinchWithScroll({
+    super.key,
+  });
 
   @override
   State<TestPinchWithScroll> createState() => _TestPinchWithScrollState();
@@ -113,9 +175,7 @@ class _TestPinchWithScrollState extends State<TestPinchWithScroll> {
   @override
   Widget build(BuildContext context) => SingleChildScrollView(
         controller: controller,
-        physics: blockScroll
-            ? const NeverScrollableScrollPhysics()
-            : const ScrollPhysics(),
+        physics: blockScroll ? const NeverScrollableScrollPhysics() : const ScrollPhysics(),
         child: SizedBox(
           width: MediaQuery.of(context).size.width,
           child: Container(
@@ -226,9 +286,7 @@ class _TestPinchWithScrollState extends State<TestPinchWithScroll> {
                   onPressed: () => setState(() {
                     selected = !selected;
                   }),
-                  child: selected
-                      ? const Text('Selected')
-                      : const Text('Unselected'),
+                  child: selected ? const Text('Selected') : const Text('Unselected'),
                 ),
                 const Text(
                   'Example of keeping scrolling state, this example sets useOverlay to false to avoid rebuilds that would destroy the scroll state:',
@@ -302,9 +360,7 @@ class _TestSimpleScrollState extends State<TestSimpleScroll> {
   @override
   Widget build(BuildContext context) => SingleChildScrollView(
         controller: controller,
-        physics: blockScroll
-            ? const NeverScrollableScrollPhysics()
-            : const ScrollPhysics(),
+        physics: blockScroll ? const NeverScrollableScrollPhysics() : const ScrollPhysics(),
         child: SizedBox(
           width: MediaQuery.of(context).size.width,
           child: Container(
@@ -320,8 +376,7 @@ class _TestSimpleScrollState extends State<TestSimpleScroll> {
                         const Text('Can block scroll'),
                         Checkbox(
                           value: canBlockScroll,
-                          onChanged: (value) =>
-                              setState(() => canBlockScroll = value!),
+                          onChanged: (value) => setState(() => canBlockScroll = value!),
                         ),
                       ],
                     ),
@@ -368,12 +423,10 @@ class TestScrollablePositionedList extends StatefulWidget {
   const TestScrollablePositionedList({super.key});
 
   @override
-  State<TestScrollablePositionedList> createState() =>
-      _TestScrollablePositionedListState();
+  State<TestScrollablePositionedList> createState() => _TestScrollablePositionedListState();
 }
 
-class _TestScrollablePositionedListState
-    extends State<TestScrollablePositionedList> {
+class _TestScrollablePositionedListState extends State<TestScrollablePositionedList> {
   bool blockScroll = false;
 
   final ItemScrollController controller = ItemScrollController();
@@ -406,17 +459,14 @@ class _TestScrollablePositionedListState
   Widget build(BuildContext context) => ScrollablePositionedList.separated(
         itemScrollController: controller,
         itemCount: testImages.length,
-        physics: blockScroll
-            ? const NeverScrollableScrollPhysics()
-            : const BouncingScrollPhysics(),
+        physics: blockScroll ? const NeverScrollableScrollPhysics() : const BouncingScrollPhysics(),
         padding: const EdgeInsets.all(10),
         itemBuilder: (BuildContext context, int index) => _ListItem(
           twoFingersOn: twoFingersOn,
           twoFingersOff: twoFingersOff,
           url: testImages[index],
         ),
-        separatorBuilder: (BuildContext context, int index) =>
-            const SizedBox(height: 8),
+        separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 8),
       );
 }
 
