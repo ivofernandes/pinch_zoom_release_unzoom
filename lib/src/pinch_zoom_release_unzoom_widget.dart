@@ -19,7 +19,7 @@ class PinchZoomReleaseUnzoomWidget extends StatefulWidget {
     this.minScale = 0.8,
     this.maxScale = 8,
     this.useOverlay = true,
-    this.rootOverlay = false,
+    this.rootOverlay = true,
     this.maxOverlayOpacity = 0.5,
     this.overlayColor = Colors.black,
     this.fingersRequiredToPinch = 2,
@@ -263,7 +263,7 @@ class _PinchZoomReleaseUnzoomWidgetState
           .clamp(0, widget.maxOverlayOpacity);
 
       return Material(
-        color: Colors.green.withOpacity(0),
+        color: Colors.transparent,
         child: Stack(
           children: [
             Positioned.fill(
