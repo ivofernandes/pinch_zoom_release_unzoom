@@ -9,7 +9,8 @@ import 'package:patrol/src/platform/contracts/contracts.dart';
 import 'package:test_api/src/backend/invoker.dart';
 
 // START: GENERATED TEST IMPORTS
-import 'Users/ivofernandes/Documents/GitHub/pinch_zoom_release_unzoom/example/integration_test/screenshot_patrol_test_generated_test.dart' as Users__ivofernandes__Documents__GitHub__pinch_zoom_release_unzoom__example__integration_test__screenshot_patrol_test_generated_test;
+import 'Users/ivofernandes/Documents/GitHub/pinch_zoom_release_unzoom/example/integration_test/screenshot_patrol_test_generated_test.dart'
+    as Users__ivofernandes__Documents__GitHub__pinch_zoom_release_unzoom__example__integration_test__screenshot_patrol_test_generated_test;
 // END: GENERATED TEST IMPORTS
 
 Future<void> main() async {
@@ -72,7 +73,10 @@ Future<void> main() async {
   });
 
 // START: GENERATED TEST GROUPS
-  group('Users.ivofernandes.Documents.GitHub.pinch_zoom_release_unzoom.example.integration_test.screenshot_patrol_test_generated_test', Users__ivofernandes__Documents__GitHub__pinch_zoom_release_unzoom__example__integration_test__screenshot_patrol_test_generated_test.main);
+  group(
+      'Users.ivofernandes.Documents.GitHub.pinch_zoom_release_unzoom.example.integration_test.screenshot_patrol_test_generated_test',
+      Users__ivofernandes__Documents__GitHub__pinch_zoom_release_unzoom__example__integration_test__screenshot_patrol_test_generated_test
+          .main);
 // END: GENERATED TEST GROUPS
 
   final dartTestGroup = await testExplorationCompleter.future;

@@ -4,7 +4,7 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:touch_indicator/touch_indicator.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -163,7 +163,7 @@ class _TestPinchWithScrollState extends State<TestPinchWithScroll> {
                     overlayColor: Colors.black,
                     fingersRequiredToPinch: -1,
                     child: Image.network(
-                      'https://storage.googleapis.com/cms-storage-bucket/70760bf1e88b184bb1bc.png',
+                      'https://flutter.dev/assets/Flip_Hero_Graphic.6db6abac78e7844acab885760bd124bd.png',
                     ),
                   ),
                 ),
@@ -270,7 +270,7 @@ class TestPinchWithoutScroll extends StatelessWidget {
           maxOverlayOpacity: 0.5,
           overlayColor: Colors.black,
           child: Image.network(
-            'https://storage.googleapis.com/cms-storage-bucket/70760bf1e88b184bb1bc.png',
+            'https://flutter.dev/assets/Flip_Hero_Graphic.6db6abac78e7844acab885760bd124bd.png',
           ),
         ),
       );
@@ -421,12 +421,8 @@ class _TestScrollablePositionedListState
 }
 
 class _ListItem extends StatelessWidget {
-  const _ListItem({
-    required this.url,
-    this.twoFingersOn,
-    this.twoFingersOff,
-    super.key,
-  });
+  const _ListItem(
+      {required this.url, this.twoFingersOn, this.twoFingersOff, super.key});
 
   final String url;
   final VoidCallback? twoFingersOn;
@@ -458,13 +454,12 @@ class TapCircle extends StatelessWidget {
   final Color borderColor;
   final double borderWidth;
 
-  const TapCircle({
-    this.size = 60.0,
-    this.color = Colors.white,
-    this.borderColor = Colors.grey,
-    this.borderWidth = 3.0,
-    super.key,
-  });
+  const TapCircle(
+      {this.size = 60.0,
+      this.color = Colors.white,
+      this.borderColor = Colors.grey,
+      this.borderWidth = 3.0,
+      super.key});
 
   @override
   Widget build(BuildContext context) => Container(
