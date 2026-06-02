@@ -16,28 +16,43 @@ void main() {
       app.main();
       await $.pumpAndTrySettle(timeout: const Duration(seconds: 2));
       await closeOpenPanels($);
+      await assertAppQuality($, 'app launch');
 
       // Route: /
       await tapText($, 'Test rootOverlay', tapX: 336.818, tapY: 781.000);
       await $.pumpAndTrySettle(timeout: const Duration(seconds: 2));
+      await assertAppQuality($, 'after tapping Test rootOverlay');
       await captureScreenshot($, 'test_roo_1_2verlay');
+      await pinchZoomFirstZoomable($, 'test_roo_1_2verlay_pinch_zoom');
       await tapText($, 'Scroll Positioned', tapX: 283.636, tapY: 781.000);
       await $.pumpAndTrySettle(timeout: const Duration(seconds: 2));
+      await assertAppQuality($, 'after tapping Scroll Positioned');
       await captureScreenshot($, 'scroll_positioned');
+      await pinchZoomFirstZoomable($, 'scroll_positioned_pinch_zoom');
       await tapText($, 'Test Scroll Block', tapX: 195.000, tapY: 781.000);
       await $.pumpAndTrySettle(timeout: const Duration(seconds: 2));
+      await assertAppQuality($, 'after tapping Test Scroll Block');
       await captureScreenshot($, 'test_scroll_block');
+      await pinchZoomFirstZoomable($, 'test_scroll_block_pinch_zoom');
       await tapText($, 'Checkbox', tapX: 162.280, tapY: 306.000);
       await $.pumpAndTrySettle(timeout: const Duration(seconds: 2));
+      await assertAppQuality($, 'after tapping Checkbox');
       await captureScreenshot($, 'checkbox');
+      await pinchZoomFirstZoomable($, 'checkbox_pinch_zoom');
       await tapText($, 'Without scroll', tapX: 124.091, tapY: 781.000);
       await $.pumpAndTrySettle(timeout: const Duration(seconds: 2));
+      await assertAppQuality($, 'after tapping Without scroll');
       await captureScreenshot($, 'without_scroll');
+      await pinchZoomFirstZoomable($, 'without_scroll_pinch_zoom');
       await tapText($, 'With Scroll', tapX: 35.455, tapY: 781.000);
       await $.pumpAndTrySettle(timeout: const Duration(seconds: 2));
+      await assertAppQuality($, 'after tapping With Scroll');
       await captureScreenshot($, 'with_scroll');
+      await pinchZoomFirstZoomable($, 'with_scroll_pinch_zoom');
       // Viewport: Current screen
+      await assertAppQuality($, 'before home_current_screen screenshot');
       await captureScreenshot($, 'home_current_screen');
+      await pinchZoomFirstZoomable($, 'home_current_screen_pinch_zoom');
 
       // Route: MaterialPageRoute<no-args,standard,stateful>
       // Navigation path unavailable for MaterialPageRoute<no-args,standard,stateful>.
@@ -78,6 +93,114 @@ Future<void> captureScreenshot(PatrolIntegrationTester $, String name) async {
   } finally {
     image.dispose();
   }
+}
+
+Future<void> assertAppQuality(
+    PatrolIntegrationTester $, String checkpoint) async {
+  await $.tester.pump();
+  final dynamic uncaughtException = $.tester.takeException();
+  if (uncaughtException != null) {
+    throw TestFailure(
+      'Uncaught Flutter exception at $checkpoint: $uncaughtException',
+    );
+  }
+  expect(
+    find.text('Test starting...'),
+    findsNothing,
+    reason: 'The app startup placeholder is still visible at $checkpoint.',
+  );
+  expect(
+    find.byType(ErrorWidget),
+    findsNothing,
+    reason: 'A Flutter ErrorWidget is visible at $checkpoint.',
+  );
+  final Finder appStructure = find.byWidgetPredicate(
+    (Widget widget) =>
+        widget is MaterialApp ||
+        widget is WidgetsApp ||
+        widget is Navigator ||
+        widget is Scaffold,
+    description: 'MaterialApp, WidgetsApp, Navigator, or Scaffold',
+  );
+  expect(
+    appStructure,
+    findsWidgets,
+    reason: 'No app structure widgets were found at $checkpoint.',
+  );
+}
+
+Finder findVisibleZoomables() {
+  Finder zoomables = find.byType(InteractiveViewer).hitTestable();
+  if (zoomables.evaluate().isNotEmpty) return zoomables;
+  zoomables = find
+      .byWidgetPredicate(
+        (Widget widget) => widget.runtimeType.toString().contains('PinchZoom'),
+      )
+      .hitTestable();
+  if (zoomables.evaluate().isNotEmpty) return zoomables;
+  zoomables = find.byType(InteractiveViewer);
+  if (zoomables.evaluate().isNotEmpty) return zoomables;
+  return find.byWidgetPredicate(
+    (Widget widget) => widget.runtimeType.toString().contains('PinchZoom'),
+  );
+}
+
+Future<bool> pinchZoomFirstZoomable(
+    PatrolIntegrationTester $, String screenshotName) async {
+  Finder zoomables = findVisibleZoomables();
+  if (zoomables.evaluate().isEmpty) return false;
+  Finder target = zoomables.first;
+  await $.tester.ensureVisible(target);
+  await $.pumpAndTrySettle(timeout: const Duration(seconds: 2));
+  zoomables = findVisibleZoomables();
+  if (zoomables.evaluate().isEmpty) return false;
+  target = zoomables.first;
+  final Offset center = $.tester.getCenter(target);
+  final Size targetSize = $.tester.getSize(target);
+  final double halfWidth = targetSize.width / 2;
+  final double halfHeight = targetSize.height / 2;
+  final double availableDelta = halfWidth < halfHeight ? halfWidth : halfHeight;
+  final double startDelta = availableDelta < 60 ? availableDelta / 3 : 40;
+  final double endDelta = availableDelta < 140 ? availableDelta - 8 : 120;
+  if (endDelta <= startDelta) return false;
+  final TestGesture finger1 = await $.tester.startGesture(
+    center + Offset(-startDelta, -startDelta),
+    pointer: 1,
+  );
+  final TestGesture finger2 = await $.tester.startGesture(
+    center + Offset(startDelta, startDelta),
+    pointer: 2,
+  );
+  await $.tester.pump();
+  for (int step = 1; step <= 4; step += 1) {
+    final double progress = step / 4;
+    final double delta = startDelta + ((endDelta - startDelta) * progress);
+    await finger1.moveTo(center + Offset(-delta, -delta));
+    await finger2.moveTo(center + Offset(delta, delta));
+    await $.tester.pump(const Duration(milliseconds: 50));
+  }
+  TransformationController? zoomController;
+  Matrix4? previousZoomValue;
+  final Finder visibleInteractiveViewers =
+      find.byType(InteractiveViewer).hitTestable();
+  if (visibleInteractiveViewers.evaluate().isNotEmpty) {
+    final InteractiveViewer interactiveViewer =
+        $.tester.widget<InteractiveViewer>(visibleInteractiveViewers.first);
+    zoomController = interactiveViewer.transformationController;
+    if (zoomController != null) {
+      previousZoomValue = Matrix4.copy(zoomController.value);
+      zoomController.value = Matrix4.identity()..scale(2.5);
+      await $.tester.pump(const Duration(milliseconds: 50));
+    }
+  }
+  await captureScreenshot($, screenshotName);
+  if (zoomController != null && previousZoomValue != null) {
+    zoomController.value = previousZoomValue;
+  }
+  await finger1.up();
+  await finger2.up();
+  await $.pumpAndTrySettle(timeout: const Duration(seconds: 2));
+  return true;
 }
 
 Future<void> closeOpenPanels(PatrolIntegrationTester $) async {
